@@ -13,7 +13,9 @@ class Courses(models.Model):
     description_course = models.CharField("Описание курса", max_length=300)
     date_start_course = models.DateField("Дата начала обучения")
     price_course = models.IntegerField("Цена курса")
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, verbose_name="Категория"
+    )
 
     def __str__(self):
         return self.name_course
