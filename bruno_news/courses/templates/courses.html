@@ -1,98 +1,50 @@
-<!doctype html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Бруноям курсы</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
+{% block main %}
+<nav aria-label="Навигация по страницам">
+    <ul class="pagination d-flex justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{page_obj.previous_page_number}}">Предыдущая</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Предыдущая</a></li>
+        {% endif %}
+        {% for page in paginator.page_range %}
+        <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+            <a class="page-link" href="?page={{page}}">{{page}}</a>
+        </li>
+        {% endfor %}
 
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Главная страница </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Курсы
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'courses' %}"><strong>Все курсы</strong></a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-
-                                </li>
-                                {% for category in category_list %}
-                                <li> <a class="dropdown-item" href="{% url 'category_filter' category.id %}">
-                                        {{ category.name_category }}
-                                    </a></li>
-                                {% empty %}
-                                <li><span class="dropdown-item">Других курсов нет</span></li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button class="btn btn-outline-success" type="submit">Найти</button>
-                </form>
-            </div>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <div class="row justify-content-center mb-4">
-            {% for cours in cours_list %}
-            <div class="col-auto mb-3">
-                <div class="card" style="width: 15rem; height:30rem; background-color: orange;">
-                    <div class="card-body">
-                        <p class="card-text text-muted">{{cours.category}}</p>
-                        <h5 class="card-title">{{cours.name_course}}</h5>
-                        <p class="card-text">{{cours.description_course|truncatechars:100}}</p>
-                        <p class="card-text"><strong>от {{cours.price_course}} р/мес</strong></p>
-                        <p class="card-text">Старт: {{ cours.date_start_course }} </p>
-                        <a href="#" class="btn btn-primary">Купить...</a>
-                    </div>
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">Следующая</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Следующая</a></li>
+        {% endif %}
+    </ul>
+</nav>
+<div class="container mt-4">
+    <div class="row justify-content-center mb-4">
+        {% for cours in cours_list %}
+        <div class="col-auto mb-3">
+            <div class="card" style="width: 15rem; height:30rem; background-color: orange;">
+                <div class="card-body">
+                    <p class="card-text text-muted">{{cours.category}}</p>
+                    <h5 class="card-title">{{cours.name_course}}</h5>
+                    <p class="card-text">{{cours.description_course|truncatechars:100}}</p>
+                    <p class="card-text"><strong>от {{cours.price_course}} р/мес</strong></p>
+                    <p class="card-text">Старт: {{ cours.date_start_course }} </p>
+                    <a href="{% url 'CoursDetail' pk=cours.pk %}" class="btn btn-primary">Узнать подробнее...</a>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12 text-center">
-                <p>Курсы скоро появятся!</p>
-            </div>
-            {% endfor %}
         </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p>Курсы скоро появятся!</p>
+        </div>
+        {% endfor %}
     </div>
+</div>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
 
-</body>
+
+{% endblock %}

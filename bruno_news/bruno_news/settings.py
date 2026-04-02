@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "news",
     "courses",
-]
+    "users",
+    ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -138,3 +139,6 @@ LOGGING = {
         },
     },
 }
+
+AUTH_USER_MODEL = 'users.User'
+FAKER_LOCALE = 'ru_RU'

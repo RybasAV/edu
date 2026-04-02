@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="name_course text-center mb-4">
+                <h1 class="display-4">{{object.name_course}}</h1>
+            </div>
+            <div class="date_start_course d-flex flex-column align-items-start mb-4">
+                <span class="badge bg-secondary mb-2 p-2 px-3">
+                    Старт: {{object.date_start_course|date:"d E Y"}}
+                </span>
+                <span class="badge bg-secondary p-2 px-3">
+                    От {{object.price_course}} р/месяц
+                </span>
+            </div>
+            <hr>
+            <div class="description_course mt-4">
+                <div class="fs-5 text-secondary" style="line-height: 1.6; text-align: justify;">
+                    {{object.description_course}}
+                </div>
+            </div>
+            <div class="comments">
+                <hr>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="new_comments">
+                            <form method="POST" action="{% url 'Cours_add_comment' cours_id=object.pk %}">
+                                {% csrf_token%}
+                                <label for="CommentFormText" class="form-label">Добавть отзыв:</label>
+                                <textarea name="text" class="form-control mb-2" id="CommentFormText" rows="3">
+                                </textarea>
+                                <button type="submit" class="btn btn-outline-secondary mb-2">Отправить</button>
+                            </form>
+                        </div>
+                        <div class="list_comments mb-2">
+                            <h5>Отзывы о курсе:</h5>
+                            {%for comment in comments%}
+                            <div class="list_comments">
+                                <div class="card border-dark mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">{{comment.username}}</h6>
+                                        <p class="card-text">{{comment.updated_at}}</p>
+                                        <p class="card-text">{{comment.text}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}

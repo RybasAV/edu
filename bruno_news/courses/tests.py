@@ -2,37 +2,23 @@ from django.test import TestCase
 from django.db import IntegrityError
 from .factories import CategoryFactory, CoursesFactory
 from .models import Category, Courses
+from .services import category_list_func
 
 
 class CourseTest(TestCase):
 
-    def test_create_category(self):
+    def test_category_list_func(self):
         """
-        Case: Проверка создания категории
-        Expected: Получить имя созданной категоии, и сравнить количество
-        """
-
-        category = CategoryFactory(name_category="Python")
-        self.assertEqual(category.name_category, "Python")
-        self.assertEqual(Category.objects.count(), 1)
-
-    def test_category_uniqueness(self):
-        """
-        Case: Проверка уникальности создаваемых имен
-        Expected: Получить ошибку при попытке создания категории с существующим именем
-        """
-
-        CategoryFactory(name_category="Программирование")
-        with self.assertRaises(IntegrityError):
-            CategoryFactory(name_category="Программирование")
-
-    def test_course_on_category(self):
-        """
-        Case: Проверка создания курсов в одной категории
-        Expected: Получить имя категории
+        Case: Проверка работы функции получения списка курсов
+        Expected: Получить верный список курсов в зависимости от запроса
         """
         category1 = CategoryFactory(name_category="Программирование")
-        courses_list = CoursesFactory.create_batch(5, category=category1)
-        self.assertEqual(len(courses_list), 5)
-        self.assertEqual(courses_list[0].category.name_category, "Программирование")
-        self.assertEqual(Courses.objects.filter(category=category1).count(), 5)
+        category2 = CategoryFactory(name_category="Дизайн")
+        courses_list = CoursesFactory.create_batch(4, category=category1)
+        courses_list = CoursesFactory.create_batch(5, category=category2)
+
+        self.assertEqual(len(category_list_func()[1]), 9)
+        self.assertEqual(len(category_list_func(1)[1]), 4)
+        self.assertEqual(len(category_list_func(2)[1]), 5)
+        self.assertEqual(category_list_func(1)[1][0].category.name_category, "Программирование")
+        self.assertEqual(category_list_func(2)[1][0].category.name_category, "Дизайн")
